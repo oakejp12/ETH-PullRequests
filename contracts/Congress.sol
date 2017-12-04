@@ -4,13 +4,13 @@ import "./Owned.sol";
 import "./TokenRecipient.sol";
 
 contract Congress is Owned, TokenRecipient {
-    
+
     // Contract variables
     uint public minimumQuorum; // Minimum number of members required to vote on a Proposal
     uint public debatingPeriodInMinutes; // Debating period for a Proposal
     int public majorityMargin;
 
-    Proposal[] public proposals; // Issues being debated on...
+    Proposal[] public proposals; // Proposals being debated on...
     uint public numProposals;
 
     mapping (address => uint) public memberId;
@@ -35,7 +35,7 @@ contract Congress is Owned, TokenRecipient {
         bytes32 proposalHash;
         Vote[] votes;
 
-        /// Mappings can be seen as hash tables which are virtually initialized such that 
+        /// Mappings can be seen as hash tables which are virtually initialized such that
         /// every possible key exists and is mapped to a value whose byte-representation is all zeros : a type's default value.
         /// The key data is not actually stored in a mapping, only its keccak256 hash used to look up the value.
         mapping (address => bool) voted;
@@ -84,7 +84,7 @@ contract Congress is Owned, TokenRecipient {
     function addMember(address targetMember, string memberName) onlyOwner public {
         uint id = memberId[targetMember]; // Check to see if member is already present
         if (id == 0) { // If member isn't the founder
-            memberId[targetMember] = members.length; 
+            memberId[targetMember] = members.length;
             id = members.length++;
         }
 
@@ -109,7 +109,7 @@ contract Congress is Owned, TokenRecipient {
 
         delete members[members.length - 1];
         members.length--;
-    } 
+    }
 
     /**
      * Change voting rules
@@ -147,12 +147,12 @@ contract Congress is Owned, TokenRecipient {
         uint weiAmount,
         string jobDescription,
         bytes transactionBytecode
-    ) 
+    )
         onlyMembers public
         returns (uint proposalID)
     {
         proposalID = proposals.length++;
-         
+
         Proposal storage p = proposals[proposalID];
         p.recipient = beneficiary;
         p.amount = weiAmount;
@@ -161,12 +161,12 @@ contract Congress is Owned, TokenRecipient {
         /// Computes the Ethereum-SHA-3 hash of the (tightly packed) arguments
         /// Tightly packed -> arguments are concatenated without padded (e.g. "ab", "c" -> "abc" | 0x616263)
         p.proposalHash = keccak256(beneficiary, weiAmount, transactionBytecode);
-        
+
         p.votingDeadline = now + debatingPeriodInMinutes * 1 minutes;
         p.executed = false;
         p.proposalPassed = false;
         p.numberOfVotes = 0;
-        
+
         ProposalAdded(proposalID, beneficiary, weiAmount, jobDescription);
         numProposals = proposalID + 1;
 
@@ -188,16 +188,99 @@ contract Congress is Owned, TokenRecipient {
      */
     function newProposalInEther(
         address beneficiary,
-        uint etherAmount, 
+        uint etherAmount,
         string jobDescription,
         bytes transactionBytecode
-    ) 
+    )
         onlyMembers public
         returns (uint proposalID)
     {
         return newProposal(beneficiary, etherAmount * 1 ether, jobDescription, transactionBytecode);
     }
-    
 
+    /**
+    * Check if proposal code matches
+    *
+    * @param proposalNumber ID number of the proposal to query
+    * @param beneficiary who to send the ether to
+    * @param weiAmount amount of ether to send
+    * @param transactionBytecode bytecode of transaction
+    */
+    function checkProposalCode(
+        uint proposalNumber,
+        address beneficiary,
+        uint weiAmount,
+        bytes transactionBytecode
+    )
+        constant public
+            returns (bool codeChecksOut)
+    {
+        Proposal storage p = proposals[proposalNumber];
+        return p.proposalHash == keccak256(beneficiary, weiAmount, transactionBytecode);
+    }
 
+    /**
+    * Log a vote for a proposal
+    *
+    * Vote `supportsProposal` ? In support : against # `proposalNumber`
+    *
+    * @param proposalNumber number of proposal
+    * @param supportsProposal either in favor or against it
+    * @param justificationText optional justification text
+    */
+    function vote(
+        uint proposalNumber,
+        bool supportsProposal,
+        string justificationText
+    )
+        onlyMembers public
+        returns (uint voteID)
+    {
+        Proposal storage p = proposals[proposalNumber]; // Get the correct proposal
+        require(!p.voted[msg.sender]); // Make sure the person hasn't voted yet
+
+        p.voted[msg.sender] = true;
+        p.numberOfVotes++;
+        if (supportsProposal) {
+            p.currentResult++;
+        } else {
+            p.currentResult--;
+        }
+
+        // Create a log of this event
+        Voted(proposalNumber, supportsProposal, msg.sender, justificationText);
+
+        return p.numberOfVotes;
+    }
+
+    /**
+    * Finish vote
+    *
+    * Count the votes proposal# `proposalNumber` and execute it if approved
+    *
+    * @param proposalNumber proposal number
+    * @param transactionBytecode optional: if the transaction contained a bytecode, send it!
+    */
+    function executeProposal(uint proposalNumber, bytes transactionBytecode) public {
+        Proposal storage p = proposals[proposalNumber];
+
+        require(now > p.votingDeadline
+            && !p.executed
+            && p.proposalHash == keccak256(p.recipient, p.amount, transactionBytecode)
+            && p.numberOfVotes >= minimumQuorum);
+
+        // Execute proposal
+        if (p.currentResult > majorityMargin) {
+            p.executed = true;
+            require(p.recipient.call.value(p.amount)(transactionBytecode));
+
+            p.proposalPassed = true;
+        } else {
+            // Failure of proposal
+            p.proposalFailed = false;
+        }
+
+        // Fire events
+        ProposalTallied(proposalNumber, p.currentResult, p.numberOfVotes, p.proposalPassed);
+    }
 }
