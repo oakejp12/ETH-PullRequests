@@ -18,7 +18,7 @@ contract Congress is Owned, TokenRecipient {
 
     // Contract Events
     event ProposalAdded(uint proposalID, address recipient, uint amount, string description);
-    event Voted(uint proposalID, address voter, string justification);
+    event Voted(uint proposalID, bool position, address voter, string justification);
     event ProposalTallied(uint proposalID, int result, uint quorum, bool active);
     event MembershipChanged(address member, bool isMember);
     event ChangeOfRules(uint newMinimumQuorum, uint newDebatingPeriodInMinutes, int newMajorityMargin);
@@ -277,7 +277,7 @@ contract Congress is Owned, TokenRecipient {
             p.proposalPassed = true;
         } else {
             // Failure of proposal
-            p.proposalFailed = false;
+            p.proposalPassed = false;
         }
 
         // Fire events
