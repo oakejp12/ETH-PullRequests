@@ -1,0 +1,26 @@
+{
+  "name": "ethpull",
+  "version": "1.0.0",
+  "description": "An ethereum-powered pull request system.",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oakejp12/ethpull.git"
+  },
+  "author": "Johan Oakes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oakejp12/ethpull/issues"
+  },
+  "homepage": "https://github.com/oakejp12/ethpull#readme",
+  "devDependencies": {
+    "lite-server": "^2.3.0"
+  }
+}
