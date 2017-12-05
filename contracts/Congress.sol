@@ -264,14 +264,13 @@ contract Congress is Owned, TokenRecipient {
     function executeProposal(uint proposalNumber, bytes transactionBytecode) public {
         Proposal storage p = proposals[proposalNumber];
 
-        require(now > p.votingDeadline
-            && !p.executed
-            && p.proposalHash == keccak256(p.recipient, p.amount, transactionBytecode)
-            && p.numberOfVotes >= minimumQuorum);
+        require(now > p.votingDeadline && !p.executed && p.proposalHash == keccak256(p.recipient, p.amount, transactionBytecode) && p.numberOfVotes >= minimumQuorum);
 
         // Execute proposal
         if (p.currentResult > majorityMargin) {
-            p.executed = true;
+            
+            p.executed = true; // Avoid recursive calling
+            
             require(p.recipient.call.value(p.amount)(transactionBytecode));
 
             p.proposalPassed = true;
