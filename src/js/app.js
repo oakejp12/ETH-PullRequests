@@ -49,8 +49,8 @@ App = {
             // Set the provider for our contract
             App.contracts.Congress.setProvider(App.web3Provider)
 
-            // Use our contract to retrieve and mark the adopted pets
-            // in the case some are already adopted from a previous visit
+            // Use our contract to retrieve and mark the voted proposals
+            // in the case some are already voted on from a previous visit
             // return App.markVoted();
         });
 
@@ -58,7 +58,7 @@ App = {
     },
 
     bindEvents: function() {
-        $(document).on('click', '.btn-adopt', App.handleAdopt);
+        $(document).on('click', '.btn-vote', App.handleVote);
     },
 
     /**
@@ -73,7 +73,7 @@ App = {
         // Using call allows us to read data from the blockchain without
         // having to send a full transaction (i.e. no Ether spent)
         return congressInstance.getVoters().call();
-    }).then((adopters) => {
+    }).then((voters) => {
             for (i = 0; i < voters.length; i++) {
             if (voters[i] !== '0x0000000000000000000000000000000000000000') {
                 $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
@@ -103,7 +103,7 @@ App = {
             App.contracts.Congress.deployed().then((instance) => {
                 congressInstance = instance;
 
-                // Execute adopt as a transaction by sending account
+                // Execute vote as a transaction by sending account
                 return congressInstance.vote(proposalId, {from: account});
             }).then((result) => {
             return App.markVoted();
