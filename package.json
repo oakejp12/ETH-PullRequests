@@ -22,5 +22,8 @@
   "homepage": "https://github.com/oakejp12/ethpull#readme",
   "devDependencies": {
     "lite-server": "^2.3.0"
+  },
+  "dependencies": {
+    "github": "^12.1.0"
   }
 }
