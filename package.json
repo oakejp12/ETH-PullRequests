@@ -7,7 +7,6 @@
     "test": "test"
   },
   "scripts": {
-    "dev": "lite-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,10 +19,11 @@
     "url": "https://github.com/oakejp12/ethpull/issues"
   },
   "homepage": "https://github.com/oakejp12/ethpull#readme",
-  "devDependencies": {
-    "lite-server": "^2.3.0"
-  },
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
     "github": "^12.1.0"
   }
 }
