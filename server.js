@@ -14,8 +14,7 @@ app.use(bodyParser.text());
 app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 
 // Static directory
-app.use(express.static(path.join(__dirname, "public")));
-app.use(favicon(path.join(__dirname, 'public', 'img', 'favicon.ico')));
+app.use(express.static(path.join(__dirname, "src")));
 
 require(path.join(__dirname, 'routes', 'html-routes.js'))(app);
 require(path.join(__dirname, 'routes', 'api-routes.js'))(app);
