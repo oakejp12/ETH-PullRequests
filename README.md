@@ -4,7 +4,12 @@ An ethereum-powered pull request system.
 
 ## Plan
 
-Since merge/pull requests are sometimes a source of contention, I plan to build a decentralized voting system that takes advantage of third-party version control systems in order to approve merge/pull requests.
+Original idea: since merge/pull requests are sometimes a source of contention, I plan to build a decentralized voting system that takes advantage of third-party version control systems in order to approve merge/pull requests.
+
+Secondary idea: Display repository issues and submit proposals in order to vote and handle the issues.
+* Lock the issue for voting.
+* Contributors submit their proposals.
+* Issue gets assigned to the contributor with the winning proposal.
 
 ### Where Ethereum and Dapps make sense: 
 * Need for multiple parties to coordinate and/or agree.
