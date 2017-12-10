@@ -1,6 +1,7 @@
 const GithubApi = require('github');
+const config = require('../../config/config');
 
-const github = new GitHubApi({
+const github = new GithubApi({
     protocol: "https",
     host: "api.github.com", // Note: Adding HTTPS:// gives a DNSLookup Error
     headers: {
@@ -18,19 +19,33 @@ github.authenticate({
 });
 
 /**
- * TODO: I want to grab a repo and be able to submit a merge request. If the 
- * Ethereum-voted proposal successfully went through.
- * 
- * Get count for how many repos I have
- * @param {*} requestOptions
- * @param {*} callback 
-*/
-let grabRepoCount = (requestOptions, callback) => {
-    console.log("Grabbing repo count");
-    github.repos.getAll({ visibility: "all", }, (err, res) => callback(err, JSON.stringify(res)));
+ * Retrieve a repository.
+ */
+let getRepoFromUser = (repository, owner, callback) => {
+    console.log(`Grabbing repository ${owner}\\${repository}.`);
+
+    github.repo.get(
+        { repo: repository, owner: owner },
+        (err, res) => callback(err, res)
+    );
 }
 
+/** 
+ * List all issues accross a particular repository.
+ * 
+ * @param {string} repository - Name of the repository to query issues from.
+ * @param {function} callback - Handle the response data.
+*/
+let getAllIssuesForRepo = (repository, owner, callback) => {
+    console.log(`Grabbing issues for ${owner}\\${repository}.`);
+
+    github.issues.getForRepo(
+        { repo: repository, owner: owner }, 
+        (err, res) => callback(err, res)
+    );
+}
 
 module.exports = {
-
+    getRepoFromUser: getRepoFromUser,
+    getAllIssuesForRepo: getAllIssuesForRepo
 }
