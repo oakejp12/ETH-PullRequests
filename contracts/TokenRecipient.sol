@@ -2,7 +2,7 @@ pragma solidity ^0.4.2;
 
 contract TokenRecipient {
     event ReceivedEther(address sender, uint amount);
-    event ReceivedTokens(address _form, uint256 _value, address _token, bytes _extraData);
+    event ReceivedTokens(address _from, uint256 _value, address _token, bytes _extraData);
 
     function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) public {
         Token t = Token(_token);
