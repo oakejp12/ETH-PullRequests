@@ -3,3 +3,6 @@
 # Node 
 node_modules
 .env
+
+# Playing around
+src/js/contract_scripts/**
