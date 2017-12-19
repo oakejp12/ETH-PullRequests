@@ -7,9 +7,6 @@ contract Owned {
         owner = msg.sender;
     }
 
-    // Modifiers are inheritable properties of contracts
-    // and may be overridden by derived contracts.
-    // The function body is inserted where "_;" appears.
     modifier onlyOwner {
         require(msg.sender == owner);
         _;
