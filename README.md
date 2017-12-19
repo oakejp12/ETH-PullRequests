@@ -21,9 +21,19 @@ Secondary idea: Display repository issues and submit proposals in order to vote 
 - [ ] How can third-party version controls rely on Ethereum to act as an DAO in order to accept merge/pull requests?
 
 ### Ideas: 
+
+#### Original Idea
 * Merge request could be completed once voting is done and some conditions are met.
     * Conditions:
         * Past repository contributors have a stake in voting.
         * The merge request doesn't complete once team members have voted or a specified time has ended.
 * A merge request acts as a proposal, which is in the form of an ethereum transaction, and other members can vote in support or against the proposal. 
 * Have JS code call the voting proposal and initialize a merge request using a Github API
+
+#### Issues Idea
+* From a landing page, a user would submit an applicable repository.
+* Load the issues for the selected repository.
+* User will select the issue to view.
+* Once the issue is selected, a list of current proposals will appear.
+* Voting on proposals proceed with a user having to submit a transaction on a proposal.
+* New proposals could be submitted with a transaction.
