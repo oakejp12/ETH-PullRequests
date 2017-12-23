@@ -54,41 +54,39 @@ contract Congress is Ownable, TokenRecipient {
     }
 
     /**
-    *
-    * Modifier that allows only shareholders to vote and create new proposals.
-    *
-     */
+    * @dev Modifier that allows only shareholders to vote and create new proposals.
+    */
     modifier onlyMembers {
         require(memberId[msg.sender] != 0);
         _;
     }
 
     /**
-     * Constructor.
+     * @dev Constructor.
      * 
      * A Congress will be created for each issue.
      * 
-     * It is important to also provide the "payable" keyword here, otherwise
-     * the function will auto. reject all Ether sent to it.
-     */
-     function Congress(uint minimumQuorumForProposals, uint minutesForDebate, int marginOfVotesForMajority) payable public {
-         changeVotingRules(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
+     * @notice It is important to also provide the "payable" keyword here, otherwise
+     * the function will automatically reject all ether sent to it.
+    */
+    function Congress(uint minimumQuorumForProposals, uint minutesForDebate, int marginOfVotesForMajority) payable public {
+        changeVotingRules(minimumQuorumForProposals, minutesForDebate, marginOfVotesForMajority);
 
-         addMember(0, ""); // Add an empty first member
+        addMember(0, ""); // Add an empty first member
 
-         addMember(owner, "founder"); // User who created issue or voting on issue is the founder of the `Congress`
-     }
+        addMember(owner, "founder"); // User who created issue or voting on issue is the founder of the `Congress`
+    }
 
     /**
-     * Add a member. Members should only be contributors to the repository.
-     * 
-     * Make `targetMember` a member named `memberName`
-     *
-     * TODO: Check if member with `memberName` already exists 
-     * 
-     * @param targetMember  the Eth address to be added
-     * @param memberName    the Github name for that member
-     */
+    * @dev Adds a member to the Congress. Members should only be contributors to the repository.
+    * 
+    * Make `targetMember` a member named `memberName`
+    *
+    * TODO: Check if member with `memberName` already exists 
+    * 
+    * @param targetMember  the Eth address to be added
+    * @param memberName    the Github name for that member
+    */
     function addMember(address targetMember, string memberName) onlyOwner public {        
         uint id = memberId[targetMember]; // Retrieve the id mapped to the address of `targetMember`
         
@@ -101,13 +99,13 @@ contract Congress is Ownable, TokenRecipient {
         MembershipChanged(targetMember, true);
     }
 
-     /**
-      * @dev Remove a member.
-      *
-      * @notice Remove membership from 'targetMember'
-      *
-      * @param targetMember ethereum address to be removed
-      */
+    /**
+    * @dev Remove a member.
+    *
+    * @notice Remove membership from 'targetMember'
+    *
+    * @param targetMember ethereum address to be removed
+    */
     function removeMember(address targetMember) onlyOwner public {
         require(memberId[targetMember] != 0); // Make `targetMember` is already a member
 
@@ -123,7 +121,7 @@ contract Congress is Ownable, TokenRecipient {
     }
 
     /**
-     * Gets a view of the members in the Congress
+     * @dev Gets a view of the members in the Congress
      *
      * @return members currently in session
      */
@@ -132,7 +130,7 @@ contract Congress is Ownable, TokenRecipient {
     }
 
     /**
-     * Change voting rules
+     * @dev Changes voting rules
      *
      * Make so that proposals need to be discussed for at least `minutesForDebate/60` hours,
      * have at least `minimumQuorumForProposals` votes, and have 50% + `marginOfVotesForMajority` votes to be executed
@@ -150,12 +148,12 @@ contract Congress is Ownable, TokenRecipient {
      }
 
     /**
-     * Add Proposal
+     * @dev Adds a Proposal
      * 
      * Propose to send `weiamount / 1e18` ether to `beneficiary` for `jobDescription`.
      * `transactionBytecode` ? Contains : Does not contain code.
      * 
-     * NOTE: The smallest denomination aka base unit of ether is called Wei.
+     * @notice The smallest denomination aka base unit of ether is called Wei.
      *
      * @param beneficiary who to send the ether to
      * @param weiAmount amount of ether to send, in wei
@@ -195,11 +193,12 @@ contract Congress is Ownable, TokenRecipient {
 
     /**
      *
-     * Add proposal in Ether
+     * @dev Adds proposal in Ether
      *
      * Propose to send 'etherAmount' ether to 'beneficiary' for 'jobDescription'. 
      * `transactionBytecode ? Contains : Does not contain` code.
-     * Utility function to use if the amount to be given is in round numbers.
+     * 
+     * @notice Utility function to use if the amount to be given is in round numbers.
      *
      * @param beneficiary who to send ether to
      * @param etherAmount amount of ether to send
@@ -219,7 +218,7 @@ contract Congress is Ownable, TokenRecipient {
     }
 
     /**
-    * Check if proposal code matches
+    * @dev Checks if proposal code matches
     *
     * @param proposalNumber ID number of the proposal to query
     * @param beneficiary who to send the ether to
@@ -240,7 +239,7 @@ contract Congress is Ownable, TokenRecipient {
     }
 
     /**
-    * Log a vote for a proposal
+    * @dev Logs a vote for a proposal
     *
     * Vote `supportsProposal` ? In support : against # `proposalNumber`
     *
@@ -261,22 +260,23 @@ contract Congress is Ownable, TokenRecipient {
 
         p.voted[msg.sender] = true;
         p.numberOfVotes++;
+        
         if (supportsProposal) {
             p.currentResult++;
         } else {
             p.currentResult--;
         }
 
-        // Create a log of this event
+        // Register the voting event
         Voted(proposalNumber, supportsProposal, msg.sender, justificationText);
 
         return p.numberOfVotes;
     }
 
     /**
-    * Finish vote
+    * Finishes voting.
     *
-    * Count the votes proposal# `proposalNumber` and execute it if approved
+    * Count the votes proposal # `proposalNumber` and execute it if approved
     *
     * @param proposalNumber proposal number
     * @param transactionBytecode optional: if the transaction contained a bytecode, send it!
