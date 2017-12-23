@@ -1,14 +1,14 @@
 pragma solidity ^0.4.2;
 
-import "./Owned.sol";
 import "./TokenRecipient.sol";
+import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
-contract Congress is Owned, TokenRecipient {
+contract Congress is Ownable, TokenRecipient {
 
     // Contract variables
-    uint public minimumQuorum; // Minimum number of members required to vote on a Proposal
+    uint public minimumQuorum;  // Minimum number of members required to vote on a Proposal
     uint public debatingPeriodInMinutes; // Debating period for a Proposal
-    int public majorityMargin;
+    int public majorityMargin; // Added margin to win majority on top of 50%
 
     Proposal[] public proposals; // Proposals being debated on...
     uint public numProposals;
@@ -53,16 +53,20 @@ contract Congress is Owned, TokenRecipient {
         string justification;
     }
 
-    // Modifier that allows only shareholders to vote and create new proposals
-    // Functions that include this modifier will only have an effect if they
-    //  satisfy the condition that the sender is a member
+    /**
+    *
+    * Modifier that allows only shareholders to vote and create new proposals.
+    *
+     */
     modifier onlyMembers {
         require(memberId[msg.sender] != 0);
         _;
     }
 
     /**
-     * Constructor function
+     * Constructor.
+     * 
+     * A Congress will be created for each issue.
      * 
      * It is important to also provide the "payable" keyword here, otherwise
      * the function will auto. reject all Ether sent to it.
@@ -72,18 +76,23 @@ contract Congress is Owned, TokenRecipient {
 
          addMember(0, ""); // Add an empty first member
 
-         addMember(owner, "founder"); // TODO: Why is this added?
+         addMember(owner, "founder"); // User who created issue or voting on issue is the founder of the `Congress`
      }
 
     /**
-     * Add a member.
+     * Add a member. Members should only be contributors to the repository.
+     * 
+     * Make `targetMember` a member named `memberName`
      *
-     * @param targetMember Eth address to be added
-     * @param memberName public name for that member (TODO: Could be Github repo name)
+     * TODO: Check if member with `memberName` already exists 
+     * 
+     * @param targetMember  the Eth address to be added
+     * @param memberName    the Github name for that member
      */
-    function addMember(address targetMember, string memberName) onlyOwner public {
-        uint id = memberId[targetMember]; // Check to see if member is already present
-        if (id == 0) { // If member isn't the founder
+    function addMember(address targetMember, string memberName) onlyOwner public {        
+        uint id = memberId[targetMember]; // Retrieve the id mapped to the address of `targetMember`
+        
+        if (id == 0) { // If the `targetMember` doesn't exist
             memberId[targetMember] = members.length;
             id = members.length++;
         }
@@ -93,22 +102,33 @@ contract Congress is Owned, TokenRecipient {
     }
 
      /**
-      * Remove a member.
+      * @dev Remove a member.
       *
       * @notice Remove membership from 'targetMember'
       *
       * @param targetMember ethereum address to be removed
       */
     function removeMember(address targetMember) onlyOwner public {
-        require(memberId[targetMember] != 0); // Make sure founder isn't removed
+        require(memberId[targetMember] != 0); // Make `targetMember` is already a member
 
         // For all members after the member to remove, push them back one spot
-        for (uint i = memberId[targetMember]; i < members.length; i++) {
+        for (uint i = memberId[targetMember]; i < members.length - 1; i++) {
             members[i] = members[i + 1]; // The first iteration replaces the member to remove
         }
 
         delete members[members.length - 1];
         members.length--;
+
+        MembershipChanged(targetMember, false);
+    }
+
+    /**
+     * Gets a view of the members in the Congress
+     *
+     * @return members currently in session
+     */
+    function getNumberOfMembers() public view returns (uint) {
+        return members.length;
     }
 
     /**
