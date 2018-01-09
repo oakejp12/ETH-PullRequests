@@ -1,5 +1,6 @@
 import redis    from 'redis';
 import contract from 'truffle-contract';
+import web3     from 'web3';
 import fs from 'fs';
 
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
@@ -71,6 +72,6 @@ let setContractDetails = (req, res, next) => {
 }
 
 module.exports = {
-    cachedContract : cachedContract,
+    cache : cache,
     setContractDetails : setContractDetails
 }
