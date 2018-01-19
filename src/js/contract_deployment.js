@@ -78,7 +78,4 @@ let setContractDetails = (req, res, next) => {
     });
 }
 
-module.exports = {
-    cache : cache,
-    setContractDetails : setContractDetails
-}
+export { cache, setContractDetails }

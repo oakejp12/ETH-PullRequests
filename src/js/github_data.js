@@ -1,5 +1,5 @@
-const GithubApi = require('github');
-const config = require('../../config/config');
+import GithubApi    from 'github';
+import config       from '../../config/config';
 
 const github = new GithubApi({
     protocol: "https",
@@ -19,9 +19,13 @@ github.authenticate({
 });
 
 /**
- * Retrieve a repository.
+ * Retrieve a specific repository from an owner.
+ * 
+ * @param {*} repository    - Name of the repository
+ * @param {*} owner         - Name of the owner that the repository belongs to
+ * @param {*} callback      - Handle the response data.
  */
-let getRepoFromUser = (repository, owner, callback) => {
+function getRepoFromUser(repository, owner, callback) {
     console.log(`Grabbing repository ${owner}\\${repository}.`);
 
     github.repo.get(
@@ -36,7 +40,7 @@ let getRepoFromUser = (repository, owner, callback) => {
  * @param {string} repository - Name of the repository to query issues from.
  * @param {function} callback - Handle the response data.
 */
-let getAllIssuesForRepo = (repository, owner, callback) => {
+function getAllIssuesForRepo(repository, owner, callback) {
     console.log(`Grabbing issues for ${owner}\\${repository}.`);
 
     github.issues.getForRepo(
@@ -45,7 +49,4 @@ let getAllIssuesForRepo = (repository, owner, callback) => {
     );
 }
 
-module.exports = {
-    getRepoFromUser: getRepoFromUser,
-    getAllIssuesForRepo: getAllIssuesForRepo
-}
+export { getRepoFromUser, getAllIssuesForRepo }
