@@ -1,8 +1,12 @@
-.idea
+# Misc
+/.idea
+/.vscode
+npm-debug.log*
+
 
 # Node 
-node_modules
+/node_modules
 .env
 
 # Playing around
-src/js/contract_scripts/**
+/src/js/contract_scripts/**
