@@ -1,20 +1,38 @@
 {
-  "name": "test_react",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "github": "^13.1.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-scripts": "1.1.0",
-    "truffle-contract": "^3.0.2",
-    "web3": "^0.20.4",
-    "zeppelin-solidity": "^1.6.0"
+  "name": "ethpull",
+  "version": "1.0.0",
+  "description": "An ethereum-powered pull request system.",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "client": "cd client && npm start",
+    "dev": "concurrently --kill-others-on-fail \"heroku local dev\" \"npm run client\" ",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oakejp12/ethpull.git"
+  },
+  "author": "Johan Oakes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oakejp12/ethpull/issues"
+  },
+  "homepage": "https://github.com/oakejp12/ethpull#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "github": "^12.1.0",
+    "redis": "^2.8.0",
+    "truffle-contract": "^3.0.1",
+    "web3": "^1.0.0-beta.27",
+    "zeppelin-solidity": "^1.5.0"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.1"
   }
 }
