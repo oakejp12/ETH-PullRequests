@@ -15,7 +15,7 @@ class App extends Component {
   }
 
   callApi = async () => {
-    const res = await fetch('/api/hello');
+    const res = await fetch('/api/');
     const body = await res.json();
 
     if (res.status !== 200) throw new Error(body.message);

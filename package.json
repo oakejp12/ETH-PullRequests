@@ -29,7 +29,7 @@
     "github": "^12.1.0",
     "redis": "^2.8.0",
     "truffle-contract": "^3.0.1",
-    "web3": "^1.0.0-beta.27",
+    "web3": "github:ethereum/web3.js",
     "zeppelin-solidity": "^1.5.0"
   },
   "devDependencies": {
