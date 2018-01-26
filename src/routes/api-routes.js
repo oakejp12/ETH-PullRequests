@@ -1,5 +1,5 @@
-import { getAllIssuesForRepo }  from '../js/github_data';
-import { cache, setContractDetails } from '../js/contract_deployment';
+import { getAllIssuesForRepo }  from '../github_data';
+import { cache, setContractDetails } from '../contract_deployment';
 
 /*
 * Expose API for the client to query

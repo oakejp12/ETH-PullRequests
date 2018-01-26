@@ -1,5 +1,5 @@
 import GithubApi    from 'github';
-import config       from '../config/config';
+import config       from './config/config';
 
 const github = new GithubApi({
     protocol: "https",
