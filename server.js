@@ -16,7 +16,6 @@ app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 // Static directory
 app.use(express.static(path.join(__dirname, 'src', 'public')));
 
-require(path.join(__dirname, 'src', 'routes', 'html-routes.js'))(app);
 require(path.join(__dirname, 'src', 'routes', 'api-routes.js'))(app);
 
 app.listen(PORT, () => {
