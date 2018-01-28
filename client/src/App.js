@@ -11,15 +11,13 @@ class App extends Component {
       organization: ''
     };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
+  handleChange = (event) => {
     this.setState({ organization: event.target.value });
   }
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     alert(`A new organization was submitted: ${this.state.organization}`);
     event.preventDefault();
 
