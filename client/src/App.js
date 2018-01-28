@@ -4,24 +4,27 @@ import './App.css';
 
 class App extends Component {
 
-  state = {
-    response: ''
-  };
+  constructor(props) {
+    super(props);
 
-  componentDidMount() {
-    this.callApi()
-      .then(res => this.setState({ response: res.express }))
-      .catch(err => console.error(err));
+    this.state = {
+      organization: ''
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  callApi = async () => {
-    const res = await fetch('/api/');
-    const body = await res.json();
+  handleChange(event) {
+    this.setState({ organization: event.target.value });
+  }
 
-    if (res.status !== 200) throw new Error(body.message);
-    
-    return body;
-  };
+  handleSubmit(event) {
+    alert(`A new organization was submitted: ${this.state.organization}`);
+    event.preventDefault();
+
+    // TODO: Render issue components
+  }
 
   render() {
     return (
@@ -30,8 +33,15 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to ethpull!</h1>
         </header>
+        <form onSubmit={this.handleSubmit}>
+          Organization:
+          <label>
+            <input type="text" value={this.state.organization} onChange={this.handleChange} />
+          </label>
+          <input type="submit" value="Submit"/>
+        </form>
         <p className="App-intro">
-          {this.state.response}
+          {this.state.organization}
         </p>
       </div>
     );
