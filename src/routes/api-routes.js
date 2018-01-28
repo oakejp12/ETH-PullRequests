@@ -10,11 +10,14 @@ module.exports = function(app) {
   /**
    * Retrieve all issues from a repository...
    */
-  app.get("/api/issues", (req, res) => {
+  app.post("/api/issues", (req, res) => {
     console.log("Hitting the repo path...");
+  
+    const organization = req.body.organization;
+    const repo = req.body.repo;
 
     // TODO: TAKE OUT HARDCODED VALUES!
-    getAllIssuesForRepo('contracts', 'git-token', (err, response) => {
+    getAllIssuesForRepo(organization, repo, (err, response) => {
       if (err) throw new Error(`Error hitting Github API: ${err}`);
       res.json(response);
     });

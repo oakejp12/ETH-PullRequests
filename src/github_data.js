@@ -25,7 +25,7 @@ github.authenticate({
  * @param {*} owner         - Name of the owner that the repository belongs to
  * @param {*} callback      - Handle the response data.
  */
-function getRepoFromUser(repository, owner, callback) {
+function getRepoFromUser(owner, repository, callback) {
     console.log(`Grabbing repository ${owner}\\${repository}.`);
 
     github.repo.get(
@@ -40,7 +40,7 @@ function getRepoFromUser(repository, owner, callback) {
  * @param {string} repository - Name of the repository to query issues from.
  * @param {function} callback - Handle the response data.
 */
-function getAllIssuesForRepo(repository, owner, callback) {
+function getAllIssuesForRepo(owner, repository, callback) {
     console.log(`Grabbing issues for ${owner}\\${repository}.`);
 
     github.issues.getForRepo(
